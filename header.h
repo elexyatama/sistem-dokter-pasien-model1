@@ -55,7 +55,7 @@ bool delete_patient_id(list_doctor &ld, string id);
 void delete_all_patient_from_doctor_id(adr_doctor &ad);
 
 adr_doctor search_doctor_id(list_doctor ld, string id);
-adr_patient search_child_id(list_doctor ld, string id);
+adr_patient search_patient_id(list_doctor ld, string id);
 
 void process_insert_doctor(list_doctor &ld); //a
 void process_insert_patient(list_doctor &ld); //b
@@ -65,10 +65,9 @@ void process_search_doctor(list_doctor ld); //e
 void process_search_patient(list_doctor ld); //f
 
 void print_all_doctor(list_doctor ld); //g
-void print_all_patient_from_doctor(list_doctor ld); //h
+void print_doctor_data(adr_doctor ad);//h
 void print_all_doctor_patient(list_doctor ld); //i
 void print_patient_data(adr_patient ap); //j
-void print_doctor_data(adr_doctor ad);
 
 int patient_count(list_doctor ld); //k
 int patient_count_from_doctor(adr_doctor ad); //l
@@ -76,5 +75,6 @@ int patient_diagnosis_count(list_doctor ld, string diag); //m
 int doctor_diagnosis_count(list_doctor ld, string diag); //n
 
 void move_patient(adr_doctor &from, adr_doctor &to, adr_patient &x); //o
+void process_move_patient(list_doctor &ld);
 
 #endif
