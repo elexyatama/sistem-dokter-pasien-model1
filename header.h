@@ -55,26 +55,31 @@ bool delete_patient_id(list_doctor &ld, string id);
 void delete_all_patient_from_doctor_id(adr_doctor &ad);
 
 adr_doctor search_doctor_id(list_doctor ld, string id);
-adr_patient search_patient_id(list_doctor ld, string id);
+adr_patient search_patient_id(list_doctor ld, string id, adr_doctor &doctor);
 
-void process_insert_doctor(list_doctor &ld); //a
-void process_insert_patient(list_doctor &ld); //b
-void process_delete_doctor(list_doctor &ld); //c
-void process_delete_patient(list_doctor &ld); //d
-void process_search_doctor(list_doctor ld); //e
-void process_search_patient(list_doctor ld); //f
+void process_insert_doctor(list_doctor &ld); //a 1
+void process_insert_patient(list_doctor &ld); //b 2
+void process_delete_doctor(list_doctor &ld); //c 3
+void process_delete_patient(list_doctor &ld); //d 4
+void process_search_doctor(list_doctor ld); //e 5
+void process_search_patient(list_doctor ld); //f 6
 
-void print_all_doctor(list_doctor ld); //g
-void print_doctor_data(adr_doctor ad);//h
-void print_all_doctor_patient(list_doctor ld); //i
-void print_patient_data(adr_patient ap); //j
+void print_all_doctor(list_doctor ld); //g 7
+void print_doctor_data(adr_doctor ad);//h 8
+void print_all_doctor_patient(list_doctor ld); //i 9
+void print_patient_data(adr_patient ap); //j 10
 
-int patient_count(list_doctor ld); //k
-int patient_count_from_doctor(adr_doctor ad); //l
-int patient_diagnosis_count(list_doctor ld, string diag); //m
-int doctor_diagnosis_count(list_doctor ld, string diag); //n
+void process_patient_count(list_doctor ld);
+void process_patient_count_from_doctor(list_doctor ld);
+void process_patient_diagnosis_count(list_doctor ld);
+void process_doctor_diagnosis_count(list_doctor ld);
 
-void move_patient(adr_doctor &from, adr_doctor &to, adr_patient &x); //o
+int patient_count(list_doctor ld); //k 11
+int patient_count_from_doctor(adr_doctor ad); //l 12
+int patient_diagnosis_count(list_doctor ld, string diag); //m 13
+int doctor_diagnosis_count(list_doctor ld, string diag); //n 14
+
+void move_patient(adr_doctor &from, adr_doctor &to, adr_patient &x); //o 15
 void process_move_patient(list_doctor &ld);
 
 #endif
