@@ -1,0 +1,5 @@
+f j merge function search patient
+h e merge function search doctor
+
+m aku nangkepnya dia ngitung pasien dengan diagnosis tertentu
+n aku nangkepnya ngitung jumlah dokter yang menghadapi pasien dengan diagnosis tertentu 
