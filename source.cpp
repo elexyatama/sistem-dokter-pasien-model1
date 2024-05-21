@@ -19,8 +19,8 @@ adr_patient create_elm_patient(infotype_patient x)
 {
     adr_patient newPatient = new elm_patient;
     newPatient->info = x;
-    newPatient->next = nullptr;
-    newPatient->prev = nullptr;
+    newPatient->next = NULL;
+    newPatient->prev = NULL;
     return newPatient;
 }
 
@@ -41,11 +41,11 @@ void insert_doctor(list_doctor &ld, adr_doctor x)
 
 void insert_patient(adr_doctor &ad, adr_patient x) 
 {
-    if (ad->listPatient == nullptr) {
+    if (ad->listPatient == NULL) {
         ad->listPatient = x;
     } else {
         adr_patient temp = ad->listPatient;
-        while (temp->next != nullptr) {
+        while (temp->next != NULL) {
             temp = temp->next;
         }
         temp->next = x;
@@ -54,20 +54,20 @@ void insert_patient(adr_doctor &ad, adr_patient x)
 }
 
 bool delete_doctor_id(list_doctor &ld, string id) {
-    if (ld.first == nullptr) {
+    if (ld.first == NULL) {
         return false;
     }
     adr_doctor current = ld.first;
-    adr_doctor previous = nullptr;
+    adr_doctor previous = NULL;
 
     // nyari dokter dg id tersebut
-    while (current != nullptr && current->info.id != id) {
+    while (current != NULL && current->info.id != id) {
         previous = current;
         current = current->next;
     }
 
     // kasus ketika sampe ujung list tapi dokter gada, return false
-    if (current == nullptr) {
+    if (current == NULL) {
         return false;
     }
 
@@ -91,19 +91,19 @@ bool delete_patient_id(list_doctor &ld, string id)
 {
     adr_doctor currentDoctor = ld.first;
     
-    while (currentDoctor != nullptr) {
+    while (currentDoctor != NULL) {
         adr_patient currentPatient = currentDoctor->listPatient;
-        adr_patient previousPatient = nullptr;
+        adr_patient previousPatient = NULL;
 
-        while (currentPatient != nullptr) {
+        while (currentPatient != NULL) {
             if (currentPatient->info.id == id) {
-                if (previousPatient == nullptr) {
+                if (previousPatient == NULL) {
                     currentDoctor->listPatient = currentPatient->next;
                 } else {
                     previousPatient->next = currentPatient->next;
                 }
 
-                if (currentPatient->next != nullptr) {
+                if (currentPatient->next != NULL) {
                     currentPatient->next->prev = previousPatient;
                 }
 
@@ -125,19 +125,19 @@ bool delete_patient_id(list_doctor &ld, string id)
 void delete_all_patient_from_doctor_id(adr_doctor &ad) 
 {
     adr_patient current = ad->listPatient;
-    while (current != nullptr) {
+    while (current != NULL) {
         adr_patient toDelete = current;
         current = current->next;
         delete toDelete;
     }
-    ad->listPatient = nullptr;
+    ad->listPatient = NULL;
 }
 
 
 adr_doctor search_doctor_id(list_doctor ld, string id) 
 {
     adr_doctor current = ld.first;
-    while (current != nullptr) {
+    while (current != NULL) {
         if (current->info.id == id) {
             return current;
         }
@@ -146,21 +146,24 @@ adr_doctor search_doctor_id(list_doctor ld, string id)
     return NULL;
 }
 
-adr_patient search_patient_id(list_doctor ld, string id) 
+adr_patient search_patient_id(list_doctor ld, string id, adr_doctor &doctor)
 {
     adr_doctor currentDoctor = ld.first;
-    while (currentDoctor != nullptr) {
+    while (currentDoctor != NULL) {
         adr_patient currentPatient = currentDoctor->listPatient;
-        while (currentPatient != nullptr) {
+        while (currentPatient != NULL) {
             if (currentPatient->info.id == id) {
-                return currentPatient; // Found the patient
+                doctor = currentDoctor; 
+                return currentPatient; 
             }
             currentPatient = currentPatient->next;
         }
         currentDoctor = currentDoctor->next;
     }
-    return nullptr; // Patient not found
+    doctor = NULL; 
+    return NULL; 
 }
+
 
 void process_insert_doctor(list_doctor &ld)
 {
@@ -188,7 +191,7 @@ void process_insert_patient(list_doctor &ld)
     cin >> doctorID;
 
     adr_doctor doctor = search_doctor_id(ld, doctorID);
-    if (doctor == nullptr) {
+    if (doctor == NULL) {
         cout << "Doctor with ID " << doctorID << " not found." << endl;
         return;
     }
@@ -242,7 +245,7 @@ void process_search_doctor(list_doctor ld)
     cin >> doctorID;
 
     adr_doctor doctor = search_doctor_id(ld, doctorID);
-    if (doctor != nullptr) {
+    if (doctor != NULL) {
         print_doctor_data(doctor);
     } else {
         cout << "Doctor with ID " << doctorID << " not found." << endl;
@@ -255,13 +258,24 @@ void process_search_patient(list_doctor ld)
     cout << "Enter Patient ID to search: ";
     cin >> patientID;
 
-    adr_patient patient = search_patient_id(ld, patientID);
-    if (patient != nullptr) {
+    adr_doctor doctor = NULL;
+    adr_patient patient = search_patient_id(ld, patientID, doctor);
+
+    if (patient != NULL && doctor != NULL) {
         print_patient_data(patient);
+        cout << "Assigned Doctor:" << endl;
+        cout << "-------------------------------" << endl;
+        cout << "Doctor ID: " << doctor->info.id << endl;
+        cout << "Doctor Name: " << doctor->info.name << endl;
+        cout << "-------------------------------" << endl;
     } else {
         cout << "Patient with ID " << patientID << " not found." << endl;
-    }
+    }  
+    cout << "Press Enter to continue...";
+    cin.ignore(); 
+    cin.get(); 
 }
+
 
 void print_all_doctor(list_doctor ld) 
 {
@@ -269,7 +283,7 @@ void print_all_doctor(list_doctor ld)
     cout << "List of All Doctors" << endl;
     cout << "---------------------------------" << endl;
     adr_doctor currentDoctor = ld.first;
-    while (currentDoctor != nullptr) {
+    while (currentDoctor != NULL) {
         cout << "Doctor ID: " << currentDoctor->info.id << endl;
         cout << "Doctor Name: " << currentDoctor->info.name << endl;
         cout << "Doctor Specialist: " << currentDoctor->info.specialist << endl;
@@ -277,6 +291,9 @@ void print_all_doctor(list_doctor ld)
         cout << "---------------------------------" << endl;
         currentDoctor = currentDoctor->next;
     }
+    cout << "Press Enter to continue...";
+    cin.ignore(); 
+    cin.get();   
 }
 
 void print_all_doctor_patient(list_doctor ld) 
@@ -285,15 +302,15 @@ void print_all_doctor_patient(list_doctor ld)
     cout << "List of All Doctors with Patients" << endl;
     cout << "---------------------------------" << endl;
     adr_doctor currentDoctor = ld.first;
-    while (currentDoctor != nullptr) {
+    while (currentDoctor != NULL) {
         cout << "Doctor ID: " << currentDoctor->info.id << endl;
         cout << "Doctor Name: " << currentDoctor->info.name << endl;
         cout << "Doctor Specialist: " << currentDoctor->info.specialist << endl;
         cout << "Doctor Age: " << currentDoctor->info.age << endl;
         cout << "Patients:" << endl;
-        if (currentDoctor->listPatient != nullptr) {
+        if (currentDoctor->listPatient != NULL) {
             adr_patient currentPatient = currentDoctor->listPatient;
-            while (currentPatient != nullptr) {
+            while (currentPatient != NULL) {
                 cout << "  Patient ID: " << currentPatient->info.id << endl;
                 cout << "  Patient Name: " << currentPatient->info.name << endl;
                 cout << "  Patient Diagnosis: " << currentPatient->info.diagnosis << endl;
@@ -307,11 +324,14 @@ void print_all_doctor_patient(list_doctor ld)
         }
         currentDoctor = currentDoctor->next;
     }
+    cout << "Press Enter to continue...";
+    cin.ignore(); 
+    cin.get();  
 }
 
 void print_patient_data(adr_patient ap) 
 {
-    if (ap != nullptr) {
+    if (ap != NULL) {
         cout << "-------------------------------" << endl;
         cout << "Patient ID: " << ap->info.id << endl;
         cout << "Patient Name: " << ap->info.name << endl;
@@ -324,7 +344,7 @@ void print_patient_data(adr_patient ap)
 }
 
 void print_doctor_data(adr_doctor ad) {
-    if (ad != nullptr) {
+    if (ad != NULL) {
         cout << "===============================" << endl;
         cout << "Doctor ID: " << ad->info.id << endl;
         cout << "Doctor Name: " << ad->info.name << endl;
@@ -332,9 +352,9 @@ void print_doctor_data(adr_doctor ad) {
         cout << "Doctor Age: " << ad->info.age << endl;
         cout << "===============================" << endl;
         cout << "Patients:" << endl;
-        if (ad->listPatient != nullptr) {
+        if (ad->listPatient != NULL) {
             adr_patient currentPatient = ad->listPatient;
-            while (currentPatient != nullptr) {
+            while (currentPatient != NULL) {
                 print_patient_data(currentPatient);
                 currentPatient = currentPatient->next;
             }
@@ -345,15 +365,71 @@ void print_doctor_data(adr_doctor ad) {
     } else {
         cout << "Doctor data is null." << endl;
     }
+    cout << "Press Enter to continue...";
+    cin.ignore(); 
+    cin.get();  
+}
+
+void process_patient_count(list_doctor ld) 
+{
+    int count = patient_count(ld);
+    cout << "Total number of patients: " << count << endl;
+    cout << "Press Enter to continue...";
+    cin.ignore();
+    cin.get();
+}
+
+void process_patient_count_from_doctor(list_doctor ld) 
+{
+    string doctorID;
+    cout << "Enter Doctor ID: ";
+    cin >> doctorID;
+
+    adr_doctor doctor = search_doctor_id(ld, doctorID);
+    if (doctor != NULL) {
+        int count = patient_count_from_doctor(doctor);
+        cout << "Number of patients for Doctor ID " << doctorID << ": " << count << endl;
+    } else {
+        cout << "Doctor with ID " << doctorID << " not found." << endl;
+    }
+    cout << "Press Enter to continue...";
+    cin.ignore();
+    cin.get();
+}
+
+void process_patient_diagnosis_count(list_doctor ld) 
+{
+    string diagnosis;
+    cout << "Enter Diagnosis: ";
+    cin >> diagnosis;
+
+    int count = patient_diagnosis_count(ld, diagnosis);
+    cout << "Number of patients with diagnosis '" << diagnosis << "': " << count << endl;
+    cout << "Press Enter to continue...";
+    cin.ignore();
+    cin.get();
+}
+
+void process_doctor_diagnosis_count(list_doctor ld) 
+{
+    string diagnosis;
+    cout << "Enter Diagnosis: ";
+    cin >> diagnosis;
+
+    int count = doctor_diagnosis_count(ld, diagnosis);
+    cout << "Number of doctors encountering patients with diagnosis '" << diagnosis << "': " << count << endl;
+    cout << "Press Enter to continue...";
+    cin.ignore();
+    cin.get();
 }
 
 int patient_count(list_doctor ld) 
 {
     int count = 0;
     adr_doctor currentDoctor = ld.first;
-    while (currentDoctor != nullptr) {
+    while (currentDoctor != NULL) {
         adr_patient currentPatient = currentDoctor->listPatient;
-        while (currentPatient != nullptr) {
+        while (currentPatient != NULL) {
             count++;
             currentPatient = currentPatient->next;
         }
@@ -366,7 +442,7 @@ int patient_count_from_doctor(adr_doctor ad)
 {
     int count = 0;
     adr_patient currentPatient = ad->listPatient;
-    while (currentPatient != nullptr) {
+    while (currentPatient != NULL) {
         count++;
         currentPatient = currentPatient->next;
     }
@@ -377,9 +453,9 @@ int patient_diagnosis_count(list_doctor ld, string diag)
 {
     int count = 0;
     adr_doctor currentDoctor = ld.first;
-    while (currentDoctor != nullptr) {
+    while (currentDoctor != NULL) {
         adr_patient currentPatient = currentDoctor->listPatient;
-        while (currentPatient != nullptr) {
+        while (currentPatient != NULL) {
             if (currentPatient->info.diagnosis == diag) {
                 count++;
             }
@@ -395,9 +471,9 @@ int doctor_diagnosis_count(list_doctor ld, string diag)
 {
     int count = 0;
     adr_doctor currentDoctor = ld.first;
-    while (currentDoctor != nullptr) {
+    while (currentDoctor != NULL) {
         adr_patient currentPatient = currentDoctor->listPatient;
-        while (currentPatient != nullptr) {
+        while (currentPatient != NULL) {
             if (currentPatient->info.diagnosis == diag) {
                 count++;
                 break; // Count the doctor only once per diagnosis
@@ -411,25 +487,25 @@ int doctor_diagnosis_count(list_doctor ld, string diag)
 
 void move_patient(adr_doctor &from, adr_doctor &to, adr_patient &x) {
     // Remove patient from 'from' doctor
-    if (from != nullptr && x != nullptr) {
+    if (from != NULL && x != NULL) {
         adr_patient currentPatient = from->listPatient;
-        adr_patient previousPatient = nullptr;
-        while (currentPatient != nullptr && currentPatient != x) {
+        adr_patient previousPatient = NULL;
+        while (currentPatient != NULL && currentPatient != x) {
             previousPatient = currentPatient;
             currentPatient = currentPatient->next;
         }
         if (currentPatient == x) {
-            if (previousPatient != nullptr) {
+            if (previousPatient != NULL) {
                 previousPatient->next = currentPatient->next;
             } else {
                 from->listPatient = currentPatient->next;
             }
-            currentPatient->next = nullptr;
+            currentPatient->next = NULL;
         }
     }
 
     // Add patient to 'to' doctor
-    if (to != nullptr && x != nullptr) {
+    if (to != NULL && x != NULL) {
         x->next = to->listPatient;
         to->listPatient = x;
     }
@@ -441,13 +517,13 @@ void process_move_patient(list_doctor &ld) {
     cout << "Enter Patient ID to move: ";
     cin >> patientID;
 
-    adr_patient patientToMove = nullptr;
-    adr_doctor fromDoctor = nullptr, toDoctor = nullptr;
+    adr_patient patientToMove = NULL;
+    adr_doctor fromDoctor = NULL, toDoctor = NULL;
 
     adr_doctor currentDoctor = ld.first;
-    while (currentDoctor != nullptr) {
+    while (currentDoctor != NULL) {
         adr_patient currentPatient = currentDoctor->listPatient;
-        while (currentPatient != nullptr) {
+        while (currentPatient != NULL) {
             if (currentPatient->info.id == patientID) {
                 patientToMove = currentPatient;
                 fromDoctor = currentDoctor;
@@ -455,13 +531,13 @@ void process_move_patient(list_doctor &ld) {
             }
             currentPatient = currentPatient->next;
         }
-        if (patientToMove != nullptr) {
+        if (patientToMove != NULL) {
             break;
         }
         currentDoctor = currentDoctor->next;
     }
 
-    if (patientToMove != nullptr) {
+    if (patientToMove != NULL) {
         print_patient_data(patientToMove);
     } else {
         cout << "Patient with ID " << patientID << " not found." << endl;
@@ -472,7 +548,7 @@ void process_move_patient(list_doctor &ld) {
     cin >> toDoctorID;
 
     currentDoctor = ld.first;
-    while (currentDoctor != nullptr) {
+    while (currentDoctor != NULL) {
         if (currentDoctor->info.id == toDoctorID) {
             toDoctor = currentDoctor;
             break;
@@ -480,7 +556,7 @@ void process_move_patient(list_doctor &ld) {
         currentDoctor = currentDoctor->next;
     }
 
-    if (toDoctor == nullptr) {
+    if (toDoctor == NULL) {
         cout << "Doctor with ID " << toDoctorID << " not found." << endl;
         return;
     }
