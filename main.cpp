@@ -29,50 +29,35 @@ int main() {
         displayMenu();
         cin >> choice;
 
-        switch (choice) {
-            case 1:
-                process_insert_doctor(ld);
-                break;
-            case 2:
-                process_insert_patient(ld);
-                break;
-            case 3: 
-                process_delete_doctor(ld);
-                break;
-            case 4:
-                process_delete_patient(ld);
-                break;
-            case 5:
-                process_search_doctor(ld);
-                break;
-            case 6:
-                process_search_patient(ld);
-                break;
-            case 7:
-                print_all_doctor(ld);
-                break;
-            case 8:
-                print_all_doctor_patient(ld);
-                break;
-            case 9:
-                process_patient_count(ld);
-                break;
-            case 10: 
-                process_patient_count_from_doctor(ld);
-                break;
-            case 11: 
-                process_patient_diagnosis_count(ld);
-                break;
-            case 12:
-                process_doctor_diagnosis_count(ld);
-                break;
-            case 0:
-                cout << "Exiting..." << endl;
-                break;
-            default:
-                cout << "Invalid choice. Please try again." << endl;
+        if (choice == 1) {
+            process_insert_doctor(ld);
+        } else if (choice == 2) {
+            process_insert_patient(ld);
+        } else if (choice == 3) {
+            process_delete_doctor(ld);
+        } else if (choice == 4) {
+            process_delete_patient(ld);
+        } else if (choice == 5) {
+            process_search_doctor(ld);
+        } else if (choice == 6) {
+            process_search_patient(ld);
+        } else if (choice == 7) {
+            print_all_doctor(ld);
+        } else if (choice == 8) {
+            print_all_doctor_patient(ld);
+        } else if (choice == 9) {
+            process_patient_count(ld);
+        } else if (choice == 10) {
+            process_patient_count_from_doctor(ld);
+        } else if (choice == 11) {
+            process_patient_diagnosis_count(ld);
+        } else if (choice == 12) {
+            process_doctor_diagnosis_count(ld);
+        } else if (choice == 0) {
+            cout << "Exiting..." << endl;
+        } else {
+            cout << "Invalid choice. Please try again." << endl;
         }
-
     } while (choice != 0);
 
     return 0;
