@@ -1,10 +1,13 @@
 #include "header.h"
 
-void create_list_doctor(list_doctor &ld)
+//ini buat create list dokter, teknis nya biasa lah ya
+void create_list_doctor(list_doctor &ld) 
 {
     ld.first = NULL;
 }
 
+//ini buat create elm dokter, nanti info2 terkait dg dokter disimpen ke sebuah node ato elemen
+// ini fungsi buat masukin info tersebut ke dalam sebuah elemen
 adr_doctor create_elm_doctor(infotype_doctor x) 
 {
     adr_doctor newDoctor = new elm_doctor;
@@ -14,7 +17,7 @@ adr_doctor create_elm_doctor(infotype_doctor x)
     return newDoctor;
 }
 
-
+//sama kaya fungsi sebelumnya, bedanya ini buat client
 adr_patient create_elm_patient(infotype_patient x) 
 {
     adr_patient newPatient = new elm_patient;
@@ -24,12 +27,13 @@ adr_patient create_elm_patient(infotype_patient x)
     return newPatient;
 }
 
-
+//fungsi buat insert dokter ke dalam list, ini metode insert last
 void insert_doctor(list_doctor &ld, adr_doctor x) 
 {
+    //kondisi ketika list kosong
     if (ld.first == NULL) {
         ld.first = x;
-    } else {
+    } else { //kondisi normal
         adr_doctor temp = ld.first;
         while (temp->next != NULL) {
             temp = temp->next;
@@ -38,12 +42,13 @@ void insert_doctor(list_doctor &ld, adr_doctor x)
     }
 }
 
-
+//fungsi buat insert patient kedalam lsit, ini metode insert last
 void insert_patient(adr_doctor &ad, adr_patient x) 
 {
+    //kondisi ketika list kosong
     if (ad->listPatient == NULL) {
         ad->listPatient = x;
-    } else {
+    } else { //kondisi normal
         adr_patient temp = ad->listPatient;
         while (temp->next != NULL) {
             temp = temp->next;
@@ -53,7 +58,9 @@ void insert_patient(adr_doctor &ad, adr_patient x)
     }
 }
 
+//fungsi buat delete dokter by id
 bool delete_doctor_id(list_doctor &ld, string id) {
+    //ngecek apakah list kosong, kalo kosong keluar fungsi
     if (ld.first == NULL) {
         return false;
     }
@@ -86,23 +93,28 @@ bool delete_doctor_id(list_doctor &ld, string id) {
     return true;
 }
 
-
+// fungsi delete pasien by id
 bool delete_patient_id(list_doctor &ld, string id) 
 {
+    //dicek dari dokter ke dokter, ini inisiasi var currdocter ke dokter awal
     adr_doctor currentDoctor = ld.first;
     
+    //looping buat nyadi pasien tersebut dari beberapa list dokter
     while (currentDoctor != NULL) {
         adr_patient currentPatient = currentDoctor->listPatient;
         adr_patient previousPatient = NULL;
 
+        //in while loop buat ngecek smua pasien yang seorang dokter punya
         while (currentPatient != NULL) {
+            //kalo nemu, mulai proses delete disini
             if (currentPatient->info.id == id) {
+                //kasus pasien dilist pertama
                 if (previousPatient == NULL) {
                     currentDoctor->listPatient = currentPatient->next;
-                } else {
+                } else { //kasus normal
                     previousPatient->next = currentPatient->next;
                 }
-
+                //kasus kalo pasien di list terakhir
                 if (currentPatient->next != NULL) {
                     currentPatient->next->prev = previousPatient;
                 }
@@ -117,11 +129,11 @@ bool delete_patient_id(list_doctor &ld, string id)
 
         currentDoctor = currentDoctor->next;
     }
-    
+    //kalo ga nemu pasiennya, return false, ini berguna difungsi lain
     return false;
 }
 
-
+//fungsi ini buat hapus semua pasien yang berada di seorang ddokter
 void delete_all_patient_from_doctor_id(adr_doctor &ad) 
 {
     adr_patient current = ad->listPatient;
@@ -139,11 +151,11 @@ adr_doctor search_doctor_id(list_doctor ld, string id)
     adr_doctor current = ld.first;
     while (current != NULL) {
         if (current->info.id == id) {
-            return current;
+            return current; // Mengembalikan elm ke dokter yang ditemukan
         }
         current = current->next;
     }
-    return NULL;
+    return NULL; // Mengembalikan NULL kalo dokter dengan ID tersebut tidak ditemukan
 }
 
 adr_patient search_patient_id(list_doctor ld, string id, adr_doctor &doctor)
@@ -153,36 +165,37 @@ adr_patient search_patient_id(list_doctor ld, string id, adr_doctor &doctor)
         adr_patient currentPatient = currentDoctor->listPatient;
         while (currentPatient != NULL) {
             if (currentPatient->info.id == id) {
-                doctor = currentDoctor; 
-                return currentPatient; 
+                doctor = currentDoctor; // Mengisi parameter 'doctor' dengan dokter yang ditemukan, penting buat fungsi process_search_patient
+                return currentPatient; // Mengembalikan elm ke pasien yang ditemukan
             }
             currentPatient = currentPatient->next;
         }
         currentDoctor = currentDoctor->next;
     }
-    doctor = NULL; 
-    return NULL; 
+    doctor = NULL; // Mengatur 'doctor' ke NULL kalo pasien tidak ditemukan
+    return NULL; // Mengembalikan NULL kalo pasien dengan ID tersebut tidak ditemukan
 }
-
 
 void process_insert_doctor(list_doctor &ld)
 {
     infotype_doctor newDoctorInfo;
 
+    // Meminta input dari pengguna untuk informasi dokter
     cout << "Enter Doctor ID: ";
     cin >> newDoctorInfo.id;
-    cout << "Enter Doctor Name: "; cin.ignore(); 
-    getline(cin, newDoctorInfo.name);
+    cout << "Enter Doctor Name: "; cin.ignore(); // Mengabaikan karakter newline dari input sebelumnya, intinya ini biar getline() ga error
+    getline(cin, newDoctorInfo.name); 
     cout << "Enter Doctor Specialist: ";
-    getline(cin, newDoctorInfo.specialist);
+    getline(cin, newDoctorInfo.specialist); 
     cout << "Enter Doctor Age: ";
-    cin >> newDoctorInfo.age;
+    cin >> newDoctorInfo.age; 
 
-    adr_doctor newDoctor = create_elm_doctor(newDoctorInfo);
-    insert_doctor(ld, newDoctor);
+    adr_doctor newDoctor = create_elm_doctor(newDoctorInfo); // Membuat elemen dokter baru
+    insert_doctor(ld, newDoctor); // Menambahkan dokter baru ke dalam daftar dokter
 
-    cout << "Doctor added successfully.\n";
-} 
+    cout << "Doctor added successfully.\n"; 
+}
+
 
 void process_insert_patient(list_doctor &ld) 
 {
@@ -190,23 +203,29 @@ void process_insert_patient(list_doctor &ld)
     cout << "Enter Doctor ID: ";
     cin >> doctorID;
 
+    // Mencari dokter berdasarkan ID
     adr_doctor doctor = search_doctor_id(ld, doctorID);
     if (doctor == NULL) {
+        // Jika dokter tidak ditemukan, tampilkan pesan dan keluar dari fungsi
         cout << "Doctor with ID " << doctorID << " not found." << endl;
         return;
     }
 
     infotype_patient newPatientInfo;
+    // Meminta input dari pengguna untuk informasi pasien baru
     cout << "Enter Patient ID: ";
     cin >> newPatientInfo.id;
-    cout << "Enter Patient Name: "; cin.ignore(); 
-    getline(cin, newPatientInfo.name);
+    cout << "Enter Patient Name: "; 
+    cin.ignore(); // Mengabaikan karakter newline dari input sebelumnya, biar getline() ga error
+    getline(cin, newPatientInfo.name); // Mengambil input nama pasien
     cout << "Enter Patient Diagnosis: ";
-    getline(cin, newPatientInfo.diagnosis);
+    getline(cin, newPatientInfo.diagnosis); // Mengambil input diagnosis pasien
     cout << "Enter Patient Age: ";
-    cin >> newPatientInfo.age;
+    cin >> newPatientInfo.age; // Mengambil input usia pasien
 
+    // Membuat elemen pasien baru
     adr_patient newPatient = create_elm_patient(newPatientInfo);
+    // Menambahkan pasien baru ke dalam daftar pasien dokter yang ditemukan
     insert_patient(doctor, newPatient);
 
     cout << "Patient added successfully to Doctor " << doctorID << "." << endl;
@@ -218,12 +237,14 @@ void process_delete_doctor(list_doctor &ld)
     cout << "Enter Doctor ID to delete: ";
     cin >> doctorID;
 
+    // Menghapus dokter berdasarkan ID dan semua pasien terkait
     if (delete_doctor_id(ld, doctorID)) {
         cout << "Doctor with ID " << doctorID << " and all associated patients were successfully deleted." << endl;
-    } else {
+    } else { //kasus klo dokter ngga ditemukan
         cout << "Doctor with ID " << doctorID << " not found." << endl;
     }
 }
+
 
 void process_delete_patient(list_doctor &ld) 
 {
@@ -231,9 +252,12 @@ void process_delete_patient(list_doctor &ld)
     cout << "Enter Patient ID to delete: ";
     cin >> patientID;
 
+    // Menghapus pasien berdasarkan ID
     if (delete_patient_id(ld, patientID)) {
+        // kasus pasien berhasil dihapus, tampilkan pesan
         cout << "Patient with ID " << patientID << " was successfully deleted." << endl;
     } else {
+        // kasus pasien tidak ditemukan, tampilkan pesan
         cout << "Patient with ID " << patientID << " not found." << endl;
     }
 }
@@ -244,10 +268,13 @@ void process_search_doctor(list_doctor ld)
     cout << "Enter Doctor ID to search: ";
     cin >> doctorID;
 
+    // Mencari dokter berdasarkan ID
     adr_doctor doctor = search_doctor_id(ld, doctorID);
     if (doctor != NULL) {
+        // kasus dokter ditemukan, cetak data dokter
         print_doctor_data(doctor);
     } else {
+        // kasus dokter tidak ditemukan, tampilkan pesan
         cout << "Doctor with ID " << doctorID << " not found." << endl;
     }
 }
@@ -259,18 +286,24 @@ void process_search_patient(list_doctor ld)
     cin >> patientID;
 
     adr_doctor doctor = NULL;
+    // Mencari pasien berdasarkan ID dan juga mengisi dokter yang menangani
     adr_patient patient = search_patient_id(ld, patientID, doctor);
 
     if (patient != NULL && doctor != NULL) {
+        // Jika pasien ditemukan, cetak data pasien
         print_patient_data(patient);
+        // Cetak juga informasi dokter yang menangani pasien tersebut
         cout << "Assigned Doctor:" << endl;
         cout << "-------------------------------" << endl;
         cout << "Doctor ID: " << doctor->info.id << endl;
         cout << "Doctor Name: " << doctor->info.name << endl;
         cout << "-------------------------------" << endl;
     } else {
+        // Jika pasien tidak ditemukan, tampilkan pesan
         cout << "Patient with ID " << patientID << " not found." << endl;
     }  
+
+    // Menunggu pengguna menekan Enter sebelum melanjutkan, biar bisa lihat data pasiennya dulu
     cout << "Press Enter to continue...";
     cin.ignore(); 
     cin.get(); 
@@ -425,92 +458,94 @@ void process_doctor_diagnosis_count(list_doctor ld)
 
 int patient_count(list_doctor ld) 
 {
-    int count = 0;
-    adr_doctor currentDoctor = ld.first;
-    while (currentDoctor != NULL) {
-        adr_patient currentPatient = currentDoctor->listPatient;
-        while (currentPatient != NULL) {
-            count++;
-            currentPatient = currentPatient->next;
+    int count = 0; // Inisialisasi penghitung pasien dengan nilai awal 0
+    adr_doctor currentDoctor = ld.first; // Pointer untuk dokter saat ini, mulai dari dokter pertama dalam daftar
+    while (currentDoctor != NULL) { // Iterasi selama masih ada dokter dalam daftar
+        adr_patient currentPatient = currentDoctor->listPatient; // Pointer untuk pasien saat ini, mulai dari pasien pertama dari dokter saat ini
+        while (currentPatient != NULL) { // Iterasi selama masih ada pasien dalam daftar pasien dokter saat ini
+            count++; // Tambahkan penghitung setiap kali ditemukan pasien
+            currentPatient = currentPatient->next; // Pindah ke pasien berikutnya dalam daftar pasien dokter saat ini
         }
-        currentDoctor = currentDoctor->next;
+        currentDoctor = currentDoctor->next; // Pindah ke dokter berikutnya dalam daftar
     }
-    return count;
+    return count; // Kembalikan jumlah total pasien dari semua dokter dalam daftar
 }
 
 int patient_count_from_doctor(adr_doctor ad) 
 {
-    int count = 0;
-    adr_patient currentPatient = ad->listPatient;
-    while (currentPatient != NULL) {
-        count++;
-        currentPatient = currentPatient->next;
+    int count = 0; // Inisialisasi penghitung pasien
+    adr_patient currentPatient = ad->listPatient; // Pointer untuk pasien saat ini
+    while (currentPatient != NULL) { // Iterasi selama masih ada pasien
+        count++; // Tambahkan penghitung pasien
+        currentPatient = currentPatient->next; // Pindah ke pasien berikutnya
     }
-    return count;
+    return count; // Kembalikan jumlah total pasien
 }
 
 int patient_diagnosis_count(list_doctor ld, string diag) 
 {
-    int count = 0;
-    adr_doctor currentDoctor = ld.first;
-    while (currentDoctor != NULL) {
-        adr_patient currentPatient = currentDoctor->listPatient;
-        while (currentPatient != NULL) {
-            if (currentPatient->info.diagnosis == diag) {
-                count++;
+    int count = 0; // Inisialisasi penghitung pasien dengan diagnosis tertentu
+    adr_doctor currentDoctor = ld.first; // Pointer untuk dokter saat ini
+    while (currentDoctor != NULL) { // Iterasi selama masih ada dokter
+        adr_patient currentPatient = currentDoctor->listPatient; // Pointer untuk pasien saat ini
+        while (currentPatient != NULL) { // Iterasi selama masih ada pasien
+            if (currentPatient->info.diagnosis == diag) { // Jika diagnosis pasien cocok
+                count++; // Tambahkan penghitung pasien
             }
-            currentPatient = currentPatient->next;
+            currentPatient = currentPatient->next; // Pindah ke pasien berikutnya
         }
-        currentDoctor = currentDoctor->next;
+        currentDoctor = currentDoctor->next; // Pindah ke dokter berikutnya
     }
-    return count;
+    return count; // Kembalikan jumlah total pasien dengan diagnosis tertentu
 }
-
 
 int doctor_diagnosis_count(list_doctor ld, string diag) 
 {
-    int count = 0;
-    adr_doctor currentDoctor = ld.first;
-    while (currentDoctor != NULL) {
-        adr_patient currentPatient = currentDoctor->listPatient;
-        while (currentPatient != NULL) {
-            if (currentPatient->info.diagnosis == diag) {
-                count++;
-                break; // Count the doctor only once per diagnosis
+    int count = 0; // Inisialisasi penghitung dokter
+    adr_doctor currentDoctor = ld.first; // Pointer untuk dokter saat ini
+    while (currentDoctor != NULL) { // Iterasi selama masih ada dokter
+        adr_patient currentPatient = currentDoctor->listPatient; // Pointer untuk pasien saat ini
+        while (currentPatient != NULL) { // Iterasi selama masih ada pasien
+            if (currentPatient->info.diagnosis == diag) { // Jika diagnosis pasien cocok
+                count++; // Tambahkan penghitung dokter
+                break; // Keluar dari loop pasien untuk menghindari penghitungan ganda
             }
-            currentPatient = currentPatient->next;
+            currentPatient = currentPatient->next; // Pindah ke pasien berikutnya
         }
-        currentDoctor = currentDoctor->next;
+        currentDoctor = currentDoctor->next; // Pindah ke dokter berikutnya
     }
-    return count;
+    return count; // Kembalikan jumlah total dokter yang menangani pasien dengan diagnosis tertentu
 }
 
+
 void move_patient(adr_doctor &from, adr_doctor &to, adr_patient &x) {
-    // Remove patient from 'from' doctor
     if (from != NULL && x != NULL) {
         adr_patient currentPatient = from->listPatient;
         adr_patient previousPatient = NULL;
+
+        // Mencari pasien dalam daftar pasien dari dokter asal
         while (currentPatient != NULL && currentPatient != x) {
             previousPatient = currentPatient;
             currentPatient = currentPatient->next;
         }
+
+        // Jika pasien ditemukan, lepaskan dari daftar pasien dokter asal
         if (currentPatient == x) {
             if (previousPatient != NULL) {
                 previousPatient->next = currentPatient->next;
             } else {
                 from->listPatient = currentPatient->next;
             }
-            currentPatient->next = NULL;
+            currentPatient->next = NULL; // Putuskan hubungan pasien dari daftar lama
         }
     }
 
-    // Add patient to 'to' doctor
+    // Tambahkan pasien ke daftar pasien dari dokter tujuan
     if (to != NULL && x != NULL) {
         x->next = to->listPatient;
         to->listPatient = x;
     }
 }
-
 
 void process_move_patient(list_doctor &ld) {
     string patientID, fromDoctorID, toDoctorID;
@@ -520,6 +555,7 @@ void process_move_patient(list_doctor &ld) {
     adr_patient patientToMove = NULL;
     adr_doctor fromDoctor = NULL, toDoctor = NULL;
 
+    // Mencari pasien dalam seluruh daftar dokter
     adr_doctor currentDoctor = ld.first;
     while (currentDoctor != NULL) {
         adr_patient currentPatient = currentDoctor->listPatient;
@@ -527,16 +563,17 @@ void process_move_patient(list_doctor &ld) {
             if (currentPatient->info.id == patientID) {
                 patientToMove = currentPatient;
                 fromDoctor = currentDoctor;
-                break;
+                break; // Pasien ditemukan, keluar dari loop
             }
             currentPatient = currentPatient->next;
         }
         if (patientToMove != NULL) {
-            break;
+            break; // Pasien ditemukan, keluar dari loop dokter
         }
         currentDoctor = currentDoctor->next;
     }
 
+    // Jika pasien ditemukan, cetak data pasien
     if (patientToMove != NULL) {
         print_patient_data(patientToMove);
     } else {
@@ -544,25 +581,30 @@ void process_move_patient(list_doctor &ld) {
         return;
     }
 
+    // Meminta ID dokter tujuan dari pengguna
     cout << "Enter Doctor ID to move the patient to: ";
     cin >> toDoctorID;
 
+    // Mencari dokter tujuan berdasarkan ID
     currentDoctor = ld.first;
     while (currentDoctor != NULL) {
         if (currentDoctor->info.id == toDoctorID) {
             toDoctor = currentDoctor;
-            break;
+            break; // Dokter tujuan ditemukan, keluar dari loop
         }
         currentDoctor = currentDoctor->next;
     }
 
+    // Jika dokter tujuan tidak ditemukan, cetak pesan kesalahan
     if (toDoctor == NULL) {
         cout << "Doctor with ID " << toDoctorID << " not found." << endl;
         return;
     }
 
+    // Pindahkan pasien dari dokter asal ke dokter tujuan
     move_patient(fromDoctor, toDoctor, patientToMove);
     cout << "Patient with ID " << patientID << " successfully moved to Doctor with ID " << toDoctorID << "." << endl;
 }
+
 
 
